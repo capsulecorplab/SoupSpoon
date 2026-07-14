@@ -18,19 +18,14 @@ SoupElement >> hrefs [
 	recurseSoup := [ :soupElement |
 		               | href |
 		               "attempt to extract href"
-		               href := (soupElement
-			                        attributeAt: 'href'
-			                        ifAbsent: [ '' ]) ifNotNil: [
-			                       soupElement
-				                       attributeAt: 'href'
-				                       ifAbsent: [ '' ] ].
+		               href := (soupElement attributeAt: 'href' ifAbsent: [ '' ]) ifNotNil: [
+			                       soupElement attributeAt: 'href' ifAbsent: [ '' ] ].
 		               "if no href, check for children"
 		               href = ''
 			               ifTrue: [ "if children, loop children"
-					               soupElement children isNotEmpty ifTrue: [
-							               soupElement children do: [ :child | "recurse child"
-								               recurseSoup value: child ] ] ]
+				               soupElement children isNotEmpty ifTrue: [
+					               soupElement children do: [ :child | "recurse child" recurseSoup value: child ] ] ]
 			               ifFalse: [ "href not blank" hrefs add: href ] ].
 	recurseSoup value: self.
-	^ (hrefs select: [ :href | href isString ]) asOrderedCollection
+	^ hrefs asOrderedCollection
 ]
